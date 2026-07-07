@@ -1,45 +1,40 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import logo from "@/assets/images/logo.png";
+import slackLogo from "@/assets/images/slack.png";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = createClient();
+  const handleLogin = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
+      const clientId = process.env.NEXT_PUBLIC_SLACK_CLIENT_ID;
+      const redirectUri = encodeURIComponent(
+        `http://localhost:3000/api/slack/callback`,
+      );
+
+      // Put your exact bot scopes here! This fixes the error instantly.
+      // Your actual bot operational permissions
+      const botScopes =
+        "channels:history,channels:read,chat:write,commands,groups:history,im:history,mpim:history,mpim:write,pins:read";
+      // CRITICAL: Next-Gen CLI configurations require user sign-in contexts to pass openid scopes inside user_scope
+      const userScopes = "openid,profile,email";
+
+      window.location.href = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=${botScopes}&user_scope=${userScopes}&redirect_uri=${redirectUri}`;
       // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      //router.push("/dashboard");
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
@@ -49,62 +44,44 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
-              </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <div>
+        <Image
+          src={logo}
+          alt="Logo"
+          width={80}
+          height={80}
+          className="mx-auto"
+        />
+        <div className="mt-4">
+          <h3 className="text-2xl font-sans text-center font-semibold">
+            Use Trace
+          </h3>
+          <p className="text-xs text-center text-black/50 mb-6">
+            Trace is built on slack for slack users. So sign in with your slack
+            account to get started.
+          </p>
+        </div>
+        <div>
+          <div className="flex flex-col gap-6">
+            {error && <p className="text-sm text-red-500">{error}</p>}
+            <Button
+              type="button"
+              onClick={() => handleLogin()}
+              className="w-full"
+              disabled={isLoading}
+            >
+              <Image src={slackLogo} alt="Slack Logo" width={20} height={20} />
+              {isLoading ? "Connecting..." : "Sign in with Slack"}
+            </Button>
+          </div>
+          <Link
+            href="/privacy"
+            className="flex justify-center text-sm font-mono text-center text-green-500 mt-4 duration-500 transition hover:text-green-600"
+          >
+            Terms of Service and Privacy Policy
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
