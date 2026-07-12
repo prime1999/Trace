@@ -17,7 +17,7 @@ export type SlackConnectionRow = {
 };
 
 export type KnowledgeSuggestionRow = {
-  id: number;
+  id: string;
   slack_connection_id: number;
   title: string;
   summary: string;
@@ -137,6 +137,62 @@ export async function getCurrentUserKnowledgeEntries() {
   return data ?? [];
 }
 
+export async function approveKnowledgeSuggestion(suggestionId: string) {
+  const supabase = await createClient();
+
+  const { data: suggestion, error: suggestionError } = await supabase
+    .from("knowledge_suggestions")
+    .select("*")
+    .eq("id", suggestionId)
+    .single();
+
+  if (suggestionError) {
+    throw suggestionError;
+  }
+
+  const { error: entryError } = await supabase
+    .from("knowledge_entries")
+    .insert({
+      slack_connection_id: suggestion.slack_connection_id,
+      title: suggestion.title,
+      summary: suggestion.summary,
+      knowledge_type: suggestion.knowledge_type,
+      channel_id: suggestion.channel_id,
+      thread_ts: suggestion.thread_ts,
+    });
+
+  if (entryError) {
+    throw entryError;
+  }
+
+  const { error: deleteError } = await supabase
+    .from("knowledge_suggestions")
+    .delete()
+    .eq("id", suggestionId);
+
+  if (deleteError) {
+    throw deleteError;
+  }
+
+  return { success: true };
+}
+export async function rejectKnowledgeSuggestion(suggestionId: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("knowledge_suggestions")
+    .delete()
+    .eq("id", suggestionId);
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    success: true,
+  };
+}
+////////////////////////////////////////////////
 export async function signOutUser() {
   const supabase = await createClient();
   await supabase.auth.signOut();

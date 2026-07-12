@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { KnowledgeSuggestionRow } from "@/lib/supabase/supabase.action";
+import {
+  approveKnowledgeSuggestion,
+  rejectKnowledgeSuggestion,
+  type KnowledgeSuggestionRow,
+} from "@/lib/supabase/supabase.action";
 // 1. Import your browser-safe Supabase client creator
 // import { createClient } from "@/lib/supabase/client";
 
@@ -35,29 +39,17 @@ const Suggestions = ({ initialSuggestions }: SuggestionsProps) => {
 
   // 2. The core workflow execution function
   const handleTriggerWorkflow = async (
-    id: number,
+    id: string,
     actionType: "approve" | "reject",
   ) => {
     try {
-      // Initialize the Supabase browser client
-      // const supabase = createClient();
-
-      // OPTION A: If your workflow is an Edge Function
-      /*
-      await supabase.functions.invoke("your-workflow-function-name", {
-        body: { suggestionId: id, action: actionType },
-      });
-      */
-
-      // OPTION B: If your workflow is a PostgreSQL Stored Procedure / RPC
-      /*
-      await supabase.rpc("trigger_knowledge_workflow", {
-        suggestion_id: id,
-        action: actionType
-      });
-      */
-
-      // Update local state so the badge color flips immediately
+      // if approve or reject
+      if (actionType === "approve") {
+        console.log("Approving suggestion with ID:", id);
+        await approveKnowledgeSuggestion(id);
+      } else if (actionType === "reject") {
+        await rejectKnowledgeSuggestion(id);
+      }
       setSuggestions((prev) =>
         prev.map((item) =>
           item.id === id
