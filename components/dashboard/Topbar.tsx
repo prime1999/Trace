@@ -2,7 +2,11 @@ import Image from "next/image";
 import slackImage from "@/assets/images/slack.png";
 import { Bell } from "lucide-react";
 
-const Topbar = () => {
+type TopbarProps = {
+  workspaceName?: string;
+};
+
+const Topbar = ({ workspaceName = "Trace" }: TopbarProps) => {
   return (
     <main className="w-full bg-gray-200 rounded-xl p-3 flex justify-between items-center">
       <h1 className="font-sans font-semibold text-lg">Dashboard</h1>
@@ -11,7 +15,9 @@ const Topbar = () => {
           <Image src={slackImage} alt="Slack" width={24} height={24} />
           <div>
             {" "}
-            <h6 className="font-sans font-semibold text-black">Trace</h6>
+            <h6 className="font-sans font-semibold text-black">
+              {workspaceName}
+            </h6>
           </div>
         </div>
         <Bell size={15} className="text-gray-500 cursor-pointer" />

@@ -5,6 +5,57 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
+export type SlackConnectionRow = {
+  id: number;
+  user_id: string;
+  access_token: string;
+  scopes: string | null;
+  team_id: string;
+  team_name: string;
+  bot_user_id: string;
+  updated_at: string;
+};
+
+export type KnowledgeSuggestionRow = {
+  id: number;
+  slack_connection_id: number;
+  title: string;
+  summary: string;
+  knowledge_type: string;
+  confidence: number;
+  channel_id: string;
+  thread_ts: string | null;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type KnowledgeEntryRow = {
+  id: number;
+  slack_connection_id: number;
+  title: string;
+  summary: string | null;
+  knowledge_type: string | null;
+  source: string | null;
+  channel_id: string | null;
+  thread_ts: string | null;
+  status: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
+async function getCurrentUserId() {
+  const claims = await getUserClaims();
+
+  if (!claims) {
+    return null;
+  }
+
+  const typedClaims = claims as { sub?: string; id?: string };
+
+  return typedClaims.sub ?? typedClaims.id ?? null;
+}
+
 export async function getUserClaims() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
@@ -14,6 +65,76 @@ export async function getUserClaims() {
   }
 
   return data.claims;
+}
+
+export async function getCurrentUserSlackConnection() {
+  const userId = await getCurrentUserId();
+
+  if (!userId) {
+    return null;
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("slack_connections")
+    .select("*")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<SlackConnectionRow>();
+
+  if (error) {
+    console.error("Error loading Slack connection:", error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getCurrentUserKnowledgeSuggestions() {
+  const connection = await getCurrentUserSlackConnection();
+
+  if (!connection) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("knowledge_suggestions")
+    .select("*")
+    .eq("slack_connection_id", connection.id)
+    .order("created_at", { ascending: false })
+    .returns<KnowledgeSuggestionRow[]>();
+
+  if (error) {
+    console.error("Error loading knowledge suggestions:", error);
+    return [];
+  }
+
+  return data ?? [];
+}
+
+export async function getCurrentUserKnowledgeEntries() {
+  const connection = await getCurrentUserSlackConnection();
+
+  if (!connection) {
+    return [];
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("knowledge_entries")
+    .select("*")
+    .eq("slack_connection_id", connection.id)
+    .order("created_at", { ascending: false })
+    .returns<KnowledgeEntryRow[]>();
+
+  if (error) {
+    console.error("Error loading knowledge entries:", error);
+    return [];
+  }
+
+  return data ?? [];
 }
 
 export async function signOutUser() {
