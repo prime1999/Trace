@@ -15,8 +15,8 @@ const useCase = () => {
           <h1>Slack</h1>
         </span>
       </div>
-      <div className="w-10/12 mx-auto flex items-start justify-center gap-4 mt-4">
-        <div>
+      <div className="w-10/12 mx-auto flex flex-col-reverse lg:flex-lg items-start justify-center gap-4 mt-4">
+        <div className="max-md:mt-6">
           <Image
             src={useCaseImage}
             alt="useCase image"
