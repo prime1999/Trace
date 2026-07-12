@@ -12,13 +12,17 @@ const DashboardPage = async () => {
   }
 
   return (
-    <main className="min-h-screen p-4 grid grid-cols-5 gap-4">
-      <div className="cols-span-1">
+    <main className="w-full min-h-screen p-4 grid grid-cols-5 gap-4">
+      <div className="col-span-1">
         <Sidebar />
       </div>
-      <div className="cols-span-4">
+      <div className="w-full col-span-4">
         <Topbar />
-        <div>Body</div>
+        <div>
+          <div className="w-full h-[calc(100vh-80px)] flex items-center justify-center bg-gray-200 rounded-lg">
+            <h6>Welcome back User</h6>
+          </div>
+        </div>
       </div>
     </main>
   );
