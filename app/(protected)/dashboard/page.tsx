@@ -8,7 +8,9 @@ import {
 } from "@/lib/supabase/supabase.action";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Topbar from "@/components/dashboard/Topbar";
+import RecentKnowledge from "@/components/dashboard/RecentKnowledge";
 import { ScrollText, FileInput, StickyNote } from "lucide-react";
+import Suggestions from "@/components/dashboard/Suggestions";
 
 const DashboardPage = async () => {
   const user = await getUserClaims();
@@ -23,14 +25,14 @@ const DashboardPage = async () => {
   console.log("entries", entries);
 
   return (
-    <main className="w-full min-h-screen p-4 grid grid-cols-5 gap-4">
+    <main className="w-full p-4 grid grid-cols-5 gap-4">
       <div className="col-span-1">
         <Sidebar />
       </div>
       <div className="w-full col-span-4">
         <Topbar workspaceName={connection?.team_name} />
         <div>
-          <div className="w-full h-[calc(100vh-80px)] p-3 bg-gray-200 rounded-xl mt-4">
+          <div className="w-full p-3 bg-gray-200 rounded-xl mt-4">
             <h6 className="font-sans font-semibold text-2xl">
               Welcome back User
             </h6>
@@ -78,6 +80,11 @@ const DashboardPage = async () => {
                   </p>
                 </span>
               </div>
+            </div>
+            <div className="flex items-start gap-4">
+              {" "}
+              <RecentKnowledge entries={entries} suggestions={suggestions} />
+              <Suggestions initialSuggestions={suggestions} />
             </div>
           </div>
         </div>

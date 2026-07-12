@@ -28,6 +28,9 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --scrollbar-track: 0 0% 92%;
+    --scrollbar-thumb: 140 42% 42%;
+    --scrollbar-thumb-hover: 140 50% 32%;
   }
 
   .dark {
@@ -56,6 +59,9 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --scrollbar-track: 0 0% 88%;
+    --scrollbar-thumb: 145 42% 32%;
+    --scrollbar-thumb-hover: 145 52% 24%;
   }
 }
 
@@ -68,6 +74,37 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Firefox scrollbar support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--scrollbar-thumb)) hsl(var(--scrollbar-track));
+  }
+
+  /* Chromium/Safari scrollbar support */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-track));
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--scrollbar-thumb)) 0%,
+      hsl(var(--scrollbar-thumb-hover)) 100%
+    );
+    border: 2px solid hsl(var(--scrollbar-track));
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--scrollbar-thumb-hover));
   }
 }
 

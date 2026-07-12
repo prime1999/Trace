@@ -13,7 +13,7 @@ import { signOutUser } from "@/lib/supabase/supabase.action";
 
 const Sidebar = () => {
   return (
-    <main className="relative min-h-screen bg-gray-200 rounded-xl p-6">
+    <main className="relative h-full bg-gray-200 rounded-xl p-6">
       <Link href="/" className="flex items-center justify-center gap-2 mb-4">
         <Image src={logo} alt="Logo" width={32} height={32} />
         <h1 className="font-sans text-lg font-bold">Trace</h1>
