@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import dashboard from "@/assets/images/slackDashboard.png";
 import slackMobile from "@/assets/images/slackMobile.png";
@@ -15,18 +16,26 @@ export function Hero() {
           Stop Losing Important Knowledge in Slack
         </h1>
         <p className="text-center text-sm max-w-3xl mt-4 text-black/70">
-          Trace automatically identifies valuable answers, decisions, and
-          discussions across your Slack workspace, turning scattered
-          conversations into a searchable knowledge base your team can trust.
+          Trace is a privacy-first organizational memory agent that helps teams
+          intentionally capture decisions, processes, lessons, and insights from
+          conversations, turning Slack into a living memory rather than a stream
+          of messages.
         </p>
-        <div className="mt-8 flex items-center gap-4 flex-wrap justify-center">
-          <button className="text-white flex items-center gap-2 rounded-full bg-black/90 px-4 py-2 text-sm font-mono duration-500 transition hover:bg-black/80">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/auth/login"
+            className="flex items-center gap-2 rounded-full bg-black/90 px-5 py-2.5 font-mono text-sm text-white transition duration-500 hover:bg-black/80"
+          >
             <span>Get Started</span>
             <ArrowRight className="h-4 w-4" />
-          </button>
-          <button className="bg-white/60 font-semibold text-sm border rounded-full px-4 py-2 duration-500 transition hover:bg-white/90">
+          </Link>
+
+          <Link
+            href="#docs"
+            className="flex items-center rounded-full border bg-white/60 px-5 py-2.5 text-sm font-semibold transition duration-500 hover:bg-white/90"
+          >
             See Documentation
-          </button>
+          </Link>
         </div>
 
         <p className="text-xs italic text-center mt-4 text-black/50 max-w-3xl">

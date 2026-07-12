@@ -52,9 +52,9 @@ const Product = () => {
           Your team's knowledge, automatically organized
         </p>
       </div>
-      <div className="w-10/12 mx-auto flex items-center gap-12 mt-4">
+      <div className="w-10/12 mx-auto flex flex-col lg:flex-row items-center gap-12 mt-4">
         {" "}
-        <p className="w-1/2 font-sans text-sm text-black/90">
+        <p className="w-full lg:w-1/2 font-sans text-sm text-black/90">
           Every day, critical decisions, solutions, and insights are shared
           inside Slack conversations, but most of that knowledge never makes it
           into documentation. <br />

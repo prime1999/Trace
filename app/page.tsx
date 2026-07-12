@@ -18,7 +18,7 @@ export default function Home() {
             <Link href={"/"}>
               <Image src={logo} alt="Logo" width={32} height={32} />
             </Link>
-            <div className="flex gap-5 items-center font-mono text-sm">
+            <div className="hidden md:flex gap-5 items-center font-mono text-sm">
               <Link
                 href="#product"
                 className="duration-500 transition hover:text-black/70"

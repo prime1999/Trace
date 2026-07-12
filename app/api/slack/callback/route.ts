@@ -25,6 +25,8 @@ export async function GET(request: Request) {
     if (!data.ok)
       return NextResponse.redirect(`${origin}/?error=${data.error}`);
 
+    console.log({ data });
+
     const botToken = data.access_token;
 
     // 2. FORCE-FETCH WORKSPACE DETAILS DIRECTLY FROM SLACK
