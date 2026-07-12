@@ -3,7 +3,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className="w-full flex flex-col gap-4 items-center justify-center py-8">
-      <h1 className="font-semibold tracking-widest text-[180px] font-sans">
+      <h1 className="font-semibold tracking-widest text-[50px] md:text-[80px] lg:text-[180px] font-sans">
         Trace AI
       </h1>
       <div className="flex items-center gap-2 justify-center font-mono text-sm">

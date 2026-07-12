@@ -103,7 +103,7 @@ const Documentation = () => {
 
   return (
     <main
-      className="flex flex-col lg:flex-row justify-center items-start gap-8 my-16"
+      className="max-lg:w-11/12 flex flex-col lg:flex-row justify-center items-start gap-8 my-16"
       id="docs"
     >
       <div>
