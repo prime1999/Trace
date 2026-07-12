@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { syncSlackConnection } from "@/lib/supabase/supabase.action";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -57,52 +57,22 @@ export async function GET(request: Request) {
     const emailPlaceholder = `slack.${userSlackId.toLowerCase()}@gmail.com`;
     const passwordPlaceholder = `slack-pass-${userSlackId}`;
 
-    const supabase = await createClient();
-    let userId: string | null = null;
+    const { error, userId } = await syncSlackConnection({
+      email: emailPlaceholder,
+      password: passwordPlaceholder,
+      botToken,
+      scopes: activeScopes,
+      teamId,
+      teamName,
+      userSlackId,
+    });
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
-      {
-        email: emailPlaceholder,
-        password: passwordPlaceholder,
-      },
-    );
-
-    if (signUpError && signUpError.message.includes("already registered")) {
-      const { data: signInData } = await supabase.auth.signInWithPassword({
-        email: emailPlaceholder,
-        password: passwordPlaceholder,
-      });
-      userId = signInData.user?.id || null;
-    } else {
-      userId = signUpData.user?.id || null;
+    if (error) {
+      console.error("❌ Slack connection sync failed:", error.message);
     }
 
     if (userId) {
-      const { error: dbError } = await supabase
-        .from("slack_connections")
-        .upsert(
-          {
-            user_id: userId,
-            access_token: botToken,
-            scopes: activeScopes,
-            team_id: teamId,
-            team_name: teamName,
-            bot_user_id: userSlackId,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "user_id,team_id" },
-        );
-
-      if (dbError) {
-        console.error(
-          "❌ Slack Connections insertion failed:",
-          dbError.message,
-        );
-      } else {
-        console.log(
-          "✅ Row inserted into public.slack_connections flawlessly!",
-        );
-      }
+      console.log("✅ Row inserted into public.slack_connections flawlessly!");
     }
 
     return NextResponse.redirect(`${origin}/dashboard`);
