@@ -27,7 +27,7 @@ const DashboardPage = async () => {
   return (
     <main className="w-full p-4 grid grid-cols-5 gap-4">
       <div className="col-span-1">
-        <Sidebar />
+        <Sidebar entries={entries} suggestions={suggestions} />
       </div>
       <div className="w-full col-span-4">
         <Topbar workspaceName={connection?.team_name} />

@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/logo.png";
@@ -10,8 +14,18 @@ import {
   Settings,
 } from "lucide-react";
 import { signOutUser } from "@/lib/supabase/supabase.action";
+import AllKnowledgeModal from "./AllKnowledgeModal";
+import SuggestionsModal from "./SuggestionsModal";
 
-const Sidebar = () => {
+const Sidebar = ({
+  entries,
+  suggestions,
+}: {
+  entries: any[];
+  suggestions: any[];
+}) => {
+  const [showKnowledgeModal, setShowKnowledgeModal] = useState(false);
+  const [showSuggestionsModal, setShowSuggestionsModal] = useState(false);
   return (
     <main className="relative h-full bg-gray-200 rounded-xl p-6">
       <Link href="/" className="flex items-center justify-center gap-2 mb-4">
@@ -23,10 +37,16 @@ const Sidebar = () => {
         <button className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90">
           <PanelsTopLeft size={16} color="green" /> Overview
         </button>
-        <button className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90">
+        <button
+          onClick={() => setShowKnowledgeModal(true)}
+          className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90"
+        >
           <BookOpenText size={16} color="green" /> Knowledge Base
         </button>
-        <button className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90">
+        <button
+          onClick={() => setShowSuggestionsModal(true)}
+          className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90"
+        >
           <Lightbulb size={16} color="green" /> Suggestions
         </button>
         <button className="flex items-center gap-2 text-black/50 duration-500 transition hover:text-black/90">
@@ -60,6 +80,18 @@ const Sidebar = () => {
           © 2026 Trace. All rights reserved.
         </p>
       </div>
+
+      <AllKnowledgeModal
+        entries={entries}
+        suggestions={suggestions}
+        showKnowledgeModal={showKnowledgeModal}
+        setShowKnowledgeModal={setShowKnowledgeModal}
+      />
+      <SuggestionsModal
+        suggestions={suggestions}
+        showSuggetsionsModal={showSuggestionsModal}
+        setShowSuggetsionsModal={setShowSuggestionsModal}
+      />
     </main>
   );
 };

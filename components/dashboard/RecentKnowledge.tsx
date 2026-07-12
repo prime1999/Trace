@@ -2,7 +2,6 @@ import type {
   KnowledgeEntryRow,
   KnowledgeSuggestionRow,
 } from "@/lib/supabase/supabase.action";
-import Link from "next/link"; // Optional: if you intend to link these later
 
 type RecentKnowledgeProps = {
   suggestions: KnowledgeSuggestionRow[];
